@@ -6,13 +6,10 @@ use image::io::Reader as ImageReader;
 
 pub mod color_shifting;
 pub mod errors;
+pub mod exporting;
 
 pub fn rinafy_file(in_file: PathBuf, out_file: PathBuf) -> Result<(), OperationError> {
-    let img = ImageReader::open(in_file)?.decode()?;
+    let image = ImageReader::open(in_file)?.decode()?;
 
-    let _frames = shift_colors(&img, 45);
-
-    img.save(out_file)?;
-
-    Ok(())
+    exporting::save_frames(shift_colors(&image, 45), out_file)
 }
