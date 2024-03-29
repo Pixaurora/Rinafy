@@ -973,6 +973,7 @@ dependencies = [
  "gifski",
  "image",
  "imgref",
+ "quick-error",
  "rgb",
 ]
 

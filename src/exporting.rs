@@ -2,7 +2,8 @@ use std::fs::File;
 use std::path::PathBuf;
 use std::thread;
 
-use crate::OperationError;
+use crate::errors::OperationError;
+use crate::errors::RinafyResult;
 use gifski::progress::NoProgress;
 use gifski::Repeat;
 use gifski::Settings;
@@ -33,7 +34,7 @@ fn image_to_imgref(image: &DynamicImage) -> ImgVec<RGBA8> {
     })
 }
 
-pub fn save_frames(frames: Vec<DynamicImage>, out_file: PathBuf) -> Result<(), OperationError> {
+pub fn save_frames(frames: Vec<DynamicImage>, out_file: &PathBuf) -> RinafyResult<()> {
     let gifski_settings = Settings {
         width: None,
         height: None,
@@ -46,7 +47,7 @@ pub fn save_frames(frames: Vec<DynamicImage>, out_file: PathBuf) -> Result<(), O
 
     let length_of_one_frame = 0.1;
 
-    let handle = thread::spawn(move || -> Result<(), OperationError> {
+    let handle = thread::spawn(move || {
         for (i, frame) in frames.iter().enumerate() {
             collector.add_frame_rgba(i, image_to_imgref(frame), length_of_one_frame * i as f64)?;
         }

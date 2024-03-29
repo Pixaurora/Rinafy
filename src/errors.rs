@@ -2,12 +2,35 @@ use std::io::Error as IOError;
 
 use gifski::Error as GifskiError;
 use image::ImageError;
+use quick_error::quick_error;
+use std::fmt::Debug;
 
-pub enum OperationError {
-    Gifski(GifskiError),
-    Io(IOError),
-    Image(ImageError),
-    Other(String),
+quick_error!(
+    pub enum OperationError {
+        Args(message: String) {
+            display("{message}")
+        }
+        Gifski(error: GifskiError) {
+            display("{}", error)
+        }
+        Io(error: IOError) {
+            display("{}", error)
+        }
+        Image(error: ImageError) {
+            display("{}", error)
+        }
+        Other(message: String) {
+            display("{message}")
+        }
+    }
+);
+
+pub type RinafyResult<T> = Result<T, OperationError>;
+
+impl Debug for OperationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
+    }
 }
 
 impl From<IOError> for OperationError {

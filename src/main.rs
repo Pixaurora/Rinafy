@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use clap::Parser;
-use rinafy::rinafy_file;
+use rinafy::{errors::RinafyResult, mask::MaskKind, rinafy_file};
 
 // A program to "Rinafy" any image, which is just to shift its colors along a gradient and create an animation this way.
 #[derive(Parser, Debug)]
@@ -14,12 +14,15 @@ struct Args {
     // The place that the Rinafy-ed image shall be put.
     #[arg(short, long)]
     out_file: PathBuf,
+
+    #[arg(short, long, default_value_t = MaskKind::NoMask)]
+    mask: MaskKind,
 }
 
-fn main() {
+fn main() -> RinafyResult<()> {
     let args = Args::parse();
 
-    if let Err(_error) = rinafy_file(args.in_file, args.out_file) {
-        eprintln!("Something went wrong, exiting!");
-    }
+    let mask = args.mask.create_mask()?;
+
+    rinafy_file(&args.in_file, &args.out_file, &mask)
 }
