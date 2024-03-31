@@ -6,6 +6,7 @@ use crate::mask::Mask;
 use image::io::Reader as ImageReader;
 
 pub mod color_shifting;
+mod conversion;
 pub mod errors;
 pub mod exporting;
 pub mod mask;
